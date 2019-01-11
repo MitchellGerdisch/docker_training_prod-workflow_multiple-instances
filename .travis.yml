@@ -12,7 +12,7 @@ services:
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
-  - cd ./fib_calcuator_provided-code/client 
+  - cd ./fib_calculator_provided-code/client 
   - docker build -t mitchellgerdisch/react-test -f Dockerfile.dev .
 
 # The commands to be executed to run the test suite
