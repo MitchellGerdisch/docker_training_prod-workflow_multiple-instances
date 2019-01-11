@@ -8,7 +8,7 @@ sudo: required
 services:
   - docker
 
-# Stuff to do before testing
+# Stuff to do before testing 
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
