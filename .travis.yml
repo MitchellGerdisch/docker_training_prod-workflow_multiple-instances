@@ -24,10 +24,10 @@ script:
 
 after_success:
   # if the above test succeeds, build the production images
-  - docker build -t mitchellgerdisch/multi-client ./fib_calculator_provided-code/client .
-  - docker build -t mitchellgerdisch/multi-nginx ./fib_calculator_provided-code/nginx.
-  - docker build -t mitchellgerdisch/multi-server ./fib_calculator_provided-code/server.
-  - docker build -t mitchellgerdisch/multi-worker ./fib_calculator_provided-code/worker .
+  - docker build -t mitchellgerdisch/multi-client ./fib_calculator_provided-code/client
+  - docker build -t mitchellgerdisch/multi-nginx ./fib_calculator_provided-code/nginx
+  - docker build -t mitchellgerdisch/multi-server ./fib_calculator_provided-code/server
+  - docker build -t mitchellgerdisch/multi-worker ./fib_calculator_provided-code/worker
   
   # login to docker hub so we can push the images to docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
