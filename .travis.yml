@@ -1,0 +1,40 @@
+# ONLY TESTS the client (React) code. 
+# DOES NOT TEST worker, server, etc.
+
+# always need sudo
+sudo: required
+
+# Need travis to install docker on it's system
+services:
+  - docker
+
+# Stuff to do before testing
+# Testing requires the dev system and not the production system which has no tests defined in it.
+# Build a docker image with a tag for later reference.
+before_install:
+  - cd ./fib_calcuator_provided-code/client 
+  - docker build -t mitchellgerdisch/react-test -f Dockerfile.dev .
+
+# The commands to be executed to run the test suite
+# Each command must be successful for Travis to run the next command
+script:
+  # the command needs to return back to Travis - by default "npm run test" will launch container and then hang and wait for input.
+  # So we need to use a flag to npm run test that returns it back to Travis
+  -  docker run mitchellgerdisch/react-test npm run test -- --coverage
+
+after_success:
+  # if the above test succeeds, build the production images
+  - docker build -t mitchellgerdisch/multi-client ./fib_calculator_provided-code/client .
+  - docker build -t mitchellgerdisch/multi-nginx ./fib_calculator_provided-code/nginx.
+  - docker build -t mitchellgerdisch/multi-server ./fib_calculator_provided-code/server.
+  - docker build -t mitchellgerdisch/multi-worker ./fib_calculator_provided-code/worker .
+  
+  # login to docker hub so we can push the images to docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # now push the images to docker hub so that later Elastic Beanstalk or wherever I'm running this stuff can find the images.
+  - docker push mitchellgerdisch/multi-client  
+  - docker push mitchellgerdisch/multi-nginx
+  - docker push mitchellgerdisch/multi-server
+  - docker push mitchellgerdisch/multi-worker
+
