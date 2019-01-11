@@ -1,36 +1,38 @@
-# Used to tell Elastic Beanstalk how to run the containers.
-# Based on AWS ECS Task Definition for containers
 {
     "AWSEBDocckerrunVersion": 2,
     "containerDefinitions": [
         {
             "name": "client",
-            "image": "mitchellgerdisch/multi-client", # name of image in Dockerhub and AWS knows to go there and find it
-            "hostname": "client", # this is used by other containers to find this container. analogous to the services names in docker-compose file
-            "essential": false  # this container is not considered to be essential. if set to true then if this container crashes all other containers in this group will be stopped as well
+            "image": "mitchellgerdisch/multi-client", 
+            "hostname": "client", 
+            "memory": 128,
+            "essential": false  
         },
         {
             "name": "server",
-            "image": "mitchellgerdisch/multi-server", # name of image in Dockerhub and AWS knows to go there and find it
-            "hostname": "api", # this is used by other containers to find this container. analogous to the services names in docker-compose file
-            "essential": false  # this container is not considered to be essential. if set to true then if this container crashes all other containers in this group will be stopped as well
+            "image": "mitchellgerdisch/multi-server", 
+            "hostname": "api", 
+            "memory": 128,
+            "essential": false 
         },
         {
             "name": "worker",
-            "image": "mitchellgerdisch/multi-worker", # name of image in Dockerhub and AWS knows to go there and find it
-            "essential": false  # this container is not considered to be essential. if set to true then if this container crashes all other containers in this group will be stopped as well
+            "image": "mitchellgerdisch/multi-worker", 
+            "memory": 128,
+            "essential": false  
         },
         {
             "name": "nginx",
-            "image": "mitchellgerdisch/multi-nginx", # name of image in Dockerhub and AWS knows to go there and find it
-            "essential": true, # At least one container MUST be marked as essential and it may as well be the nginx server since without nothing is accessible
+            "image": "mitchellgerdisch/multi-nginx", 
+            "memory": 128,
+            "essential": true, 
             "portMappings": [
                 {
                     "hostPort": 80,
                     "containerPort": 80
                 }
             ],
-            "links": ["client", "server"] # This sets up connectivity from nginx container to the client and server containers
+            "links": ["client", "server"] 
         }
 
     ]
