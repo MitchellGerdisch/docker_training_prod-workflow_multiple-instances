@@ -12,7 +12,7 @@ services:
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
-  - cd $BUILD_DIR/fib_calculator_provided-code/client 
+  - cd $TRAVIS_BUILD_DIR/fib_calculator_provided-code/client 
   - docker build -t mitchellgerdisch/react-test -f Dockerfile.dev .
 
 # The commands to be executed to run the test suite
@@ -24,7 +24,7 @@ script:
 
 after_success:
   # if the above test succeeds, build the production images
-  - cd $BUILD_DIR/fib_calculator_provided-code
+  - cd $TRAVIS_BUILD_DIR/fib_calculator_provided-code
   - docker build -t mitchellgerdisch/multi-client ./client
   - docker build -t mitchellgerdisch/multi-nginx ./nginx
   - docker build -t mitchellgerdisch/multi-server ./server
