@@ -1,5 +1,6 @@
 # Used to direct Elastic Beanstalk how to run the containers.
 # Based on AWS ECS Task Definition for containers
+
 {
     "AWSEBDocckerrunVersion": 2,
     "containerDefinitions": [
