@@ -39,6 +39,9 @@ after_success:
   - docker push mitchellgerdisch/multi-server
   - docker push mitchellgerdisch/multi-worker
 
+  # now go back to top directory so deploy can find things
+  - cd $TRAVIS_BUILD_DIR
+
   # now tell AWS that we've pushed the images so it can grab them and deploy them - specifically when it sees the Dockerrun.aws.json it'll use it to do the deploy
 deploy:
   # Stuff to do to push to AWS beanstalk for running
