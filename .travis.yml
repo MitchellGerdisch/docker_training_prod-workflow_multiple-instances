@@ -8,7 +8,7 @@ sudo: required
 services:
   - docker
 
-# Stuff to do before testing 
+# Stuff to do before testing
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
@@ -41,7 +41,6 @@ after_success:
 
   # now tell AWS that we've pushed the images so it can grab them and deploy them - specifically when it sees the Dockerrun.aws.json it'll use it to do the deploy
 deploy:
-  - cd $TRAVIS_BUILD_DIR
   # Stuff to do to push to AWS beanstalk for running
   # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
   provider: elasticbeanstalk
