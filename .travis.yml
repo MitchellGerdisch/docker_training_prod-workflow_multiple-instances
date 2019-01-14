@@ -46,8 +46,8 @@ deploy:
   # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
   provider: elasticbeanstalk
   region: "us-east-1"
-  app: "Multi-Docker"
-  env: "MultiDocker-env"
+  app: "MultiDocker"
+  env: "Multidocker-env"
   bucket_name: "elasticbeanstalk-us-east-1-459434280743"
   bucket_path: "multi-docker" # will match the app name above
   on: 
