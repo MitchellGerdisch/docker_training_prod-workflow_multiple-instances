@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-pod
+  labels:
+    component: web
+spec:
+  containers:
+    - name: client
+      # A test of the declarative nature of K8s to automatically update the pod based on the config file.
+      # After applying this version of the pod yaml, we should see the multi-client image based containers replaced by the multi-worker image.
+      #image: mitchellgerdisch/multi-client
+      image: mitchellgerdisch/multi-worker 
+      ports:
+        - containerPort: 3000

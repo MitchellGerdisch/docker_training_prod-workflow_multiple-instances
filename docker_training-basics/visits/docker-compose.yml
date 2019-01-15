@@ -1,0 +1,18 @@
+version: '3'
+
+# "services" basically means I'm listing a couple of services that will in this caes take the form of docker containers
+services:
+  redis-server: 
+    image: 'redis'
+  node-app:
+    #restart: 'on-failure'  # Various restart policies are available that tell Docker to automatically restart a crashed container under given circumstances
+    # ./node-app is a subfolder that contains a Dockerfile to build a node.js container
+    build: ./node-app
+    ports: 
+      # the "-" indicates an array in yaml and so here we are providing an array (of 1 item) of port mappings for the node-app service
+      # This maps local machine port 4001 to container port 8081 where node-app is listening
+      - "4001:8081"
+
+### NOTE: the fact that we created these two services in the same Docker compose file, they are automatically connected on the same internal 
+### network and so they will be able to find eachother.
+### But the index.js file for the node-app needs to create the Node JS redis client with a host option - see node-app/index.js

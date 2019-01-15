@@ -1,0 +1,25 @@
+version: '3'
+
+services: 
+  web: 
+    build: 
+      context: .  # Look in same folder as docker compose file for all needed files
+      dockerfile: Dockerfile.dev  # Use this file for the docker file 
+    ports: 
+      - "3000:3000"
+    volumes:
+      # This line says to use the /app/node_modules that is already in the image/container built by the Dockerfile
+      - /app/node_modules
+      # This line says that for anything other than /app/node_modules given above, to use stuff found under /app on the local machine in the current directory on the local machine.
+      - .:/app
+      
+  tests: 
+    build: 
+      context: .  # Look in same folder as docker compose file for all needed files
+      dockerfile: Dockerfile.dev  # Use this file for the docker file 
+    volumes:
+      # This line says to use the /app/node_modules that is already in the image/container built by the Dockerfile
+      - /app/node_modules
+      # This line says that for anything other than /app/node_modules given above, to use stuff found under /app on the local machine in the current directory on the local machine.
+      - .:/app
+    command: ["npm", "run", "test"]

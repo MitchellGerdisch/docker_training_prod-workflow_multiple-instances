@@ -8,7 +8,7 @@ sudo: required
 services:
   - docker
 
-# Stuff to do before testing
+# Stuff to do before testing 
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
@@ -39,22 +39,19 @@ after_success:
   - docker push mitchellgerdisch/multi-server
   - docker push mitchellgerdisch/multi-worker
 
-  # now go back to top directory so deploy can find things
-  - cd $TRAVIS_BUILD_DIR
-
-### DEPLOY IS DISABLED AT THIS TIME since the elastic beanstalk and related REDIS and RDS instances are not running ###
   # now tell AWS that we've pushed the images so it can grab them and deploy them - specifically when it sees the Dockerrun.aws.json it'll use it to do the deploy
-# deploy:
-#   # Stuff to do to push to AWS beanstalk for running
-#   # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
-#   provider: elasticbeanstalk
-#   region: "us-east-1"
-#   app: "MultiDocker"
-#   env: "Multidocker-env"
-#   bucket_name: "elasticbeanstalk-us-east-1-459434280743"
-#   bucket_path: "multi-docker" # will match the app name above
-#   on: 
-#     branch: master
-#   access_key_id: "$AWS_ACCESS_KEY"  # This is an "environment" variable set up in Travis CI settings for the given repository
-#   secret_access_key: 
-#     secure: "$AWS_SECRET_ACCESS_KEY"
+deploy:
+  - cd $TRAVIS_BUILD_DIR
+  # Stuff to do to push to AWS beanstalk for running
+  # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "Multi-Docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-1-459434280743"
+  bucket_path: "multi-docker" # will match the app name above
+  on: 
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"  # This is an "environment" variable set up in Travis CI settings for the given repository
+  secret_access_key: 
+    secure: "$AWS_SECRET_ACCESS_KEY"

@@ -1,0 +1,36 @@
+### MAY NOT CURRENTLY WORK DUE TO REPO RESTRUCTURING ###
+
+# always need sudo
+sudo: required
+
+# Need travis to install docker on it's system
+services:
+  - docker
+
+# Stuff to do before testing
+# Testing requires the dev system and not the production system which has no tests defined in it.
+# Build a docker image with a tag for later reference.
+before_install:
+  - cd prod-grade-workflow/frontend
+  - docker build -t mitchellgerdisch-docker_training -f Dockerfile.dev .
+
+# The commands to be executed to run the test suite
+# Each command must be successful for Travis to run the next command
+script:
+  # the command needs to return back to Travis - by default "npm run test" will launch container and then hang and wait for input.
+  # So we need to use a flag to npm run test that returns it back to Travis
+  -  docker run mitchellgerdisch-docker_training npm run test -- --coverage
+
+deploy:
+  # Stuff to do to push to AWS beanstalk for running
+  # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "docker_training"
+  env: "DockerTraining-env"
+  bucket_name: "elasticbeanstalk-us-east-1-459434280743"
+  bucket_path: "docker_training" # will match the app name above
+  on: 
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"  # This is an "environment" variable set up in Travis CI settings for the given repository
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY"

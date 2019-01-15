@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1
+  selector: # Used by deployment manager in K8s to find the Pods it created
+    matchLabels:
+      component: web  # This needs to match the labels:component:web below.
+  template:
+    metadata:
+      labels: 
+        component: web # This needs to match the selector section above
+    spec:
+      containers:
+        - name: client
+          image: mitchellgerdisch/multi-client
+          ports:
+            - containerPort: 3000
