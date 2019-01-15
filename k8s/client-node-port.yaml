@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-node-port
+spec:
+  type: NodePort  # NOTE: The NodePort type of Service is pretty much never used in Production since you will access the Pods via the LoadBalancer type of Service. It's really only used for dev.
+  ports:  # an array of port definitions - as indicated by the hyphen
+    - port: 3050  # This port is used by other pods to talk to the client-pod. so, it's an internal reference. This is currently not applicale to our use-case since we got no other pod talking to the client-pod
+      targetPort: 3000   # this needs to match the port in the pod file
+      nodePort: 31515 # This is the port exposed to the outside world.
+  selector:
+    component: web # This tells k8s that this service interacts with pods that are labeled as "web" - see the client-pod.yaml and note it is labeled as component "web"
+                   # NOTE: The term "component" here is arbritrary - as long as the same key is used in teh Pod file, it'll work fine.
