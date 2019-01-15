@@ -1,4 +1,4 @@
-### MAY NOT CURRENTLY WORK DUE TO REPO RESTRUCTURING ###
+### NEED TO MOVE TO TOP OF REPO FOR TRAVIS TO USE ###
 
 # always need sudo
 sudo: required
@@ -11,7 +11,7 @@ services:
 # Testing requires the dev system and not the production system which has no tests defined in it.
 # Build a docker image with a tag for later reference.
 before_install:
-  - cd prod-grade-workflow/frontend
+  - cd $TRAVIS_BUILD_DIR/elastic_beanstalk-single_instance/frontend
   - docker build -t mitchellgerdisch-docker_training -f Dockerfile.dev .
 
 # The commands to be executed to run the test suite
