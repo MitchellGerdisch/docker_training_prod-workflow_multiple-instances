@@ -7,5 +7,5 @@ spec:
   selector:
     component: web
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 3000  # port other pods hit to talk to client pod
+      targetPort: 3000 # port on target POD - see client-deployment.yaml to see client pod is on port 3000 - this port matches that

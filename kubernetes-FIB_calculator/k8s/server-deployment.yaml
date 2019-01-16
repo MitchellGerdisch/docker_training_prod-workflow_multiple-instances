@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       component: server
@@ -12,9 +12,13 @@ spec:
       labels:
         component: server
     spec:
+      initContainers:
+        - name: init-mydb
+          image: busybox
+          command: ['sh', '-c', 'until nslookup postgres-cluster-ip-service; do echo waiting for db; sleep 2; done;']
       containers:
         - name: server
-          image: stephengrider/multi-server
+          image: mitchellgerdisch/multi-server
           ports:
             - containerPort: 5000
           env:
