@@ -12,15 +12,15 @@ spec:
       labels:
         component: server
     spec:
-      # # initContainers have to complete successfully in order before the main containers are launched.
-      # # This container spins up a postgres container and runs a built-in function pg_ready command to test if the DB is up and running
-      # # and will wait until it is.
-      # initContainers:
-      #   - name: check-db-ready
-      #     image: postgres:9.6.5
-      #     command: ['sh', '-c', 
-      #       'until pg_isready -h postgres-cluster-ip-service -p 5432; 
-      #       do echo waiting for database; sleep 2; done;']
+      # initContainers have to complete successfully in order before the main containers are launched.
+      # This container spins up a postgres container and runs a built-in function pg_ready command to test if the DB is up and running
+      # and will wait until it is.
+      initContainers:
+        - name: check-db-ready
+          image: postgres:9.6.5
+          command: ['sh', '-c', 
+            'until pg_isready -h postgres-cluster-ip-service -p 5432; 
+            do echo waiting for database; sleep 2; done;']
       containers:
         - name: server
           image: mitchellgerdisch/multi-server
