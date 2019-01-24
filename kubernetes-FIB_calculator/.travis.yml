@@ -1,6 +1,5 @@
 ##### Needs to be moved to top of repo for Travis to see and use
 
-
 # always need sudo
 sudo: required
 
@@ -8,12 +7,28 @@ sudo: required
 services:
   - docker
 
-# Stuff to do before testing
-# Testing requires the dev system and not the production system which has no tests defined in it.
-# Build a docker image with a tag for later reference.
+env:
+  global:
+    # Gets the unique sha for this commit. Is then used by deploy.sh script to tag the image
+    - GIT_SHA=$(git rev-parse HEAD)
+    - GITMAINFOLDER="$TRAVIS_BUILD_DIR/kubernetes-FIB_calculator"
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1    
+
+# Install google cloud sdk named gcloud
+# Authenticate to google cloud
+# Then use gcloud to talk to Google cloud 
+# authenticate to docker and start doing docker stuff
 before_install:
-  - cd $TRAVIS_BUILD_DIR/elastic_beanstalk-FIB_calculator/client 
-  - docker build -t mitchellgerdisch/react-test -f Dockerfile.dev .
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in $GITMAINFOLDER/travis-glcoud-service_account.json.enc -out ./travis-glcoud-service_account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null; 
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file travis-glcoud-service_account.json
+  - gcloud config set project zippy-tiger-228918
+  - gcloud config set compute/zone us-central1-a
+  - gcloud container clusters get-credentials k8s-cluster  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker build -t mitchellgerdisch/react-test -f $GITMAINFOLDER/client/Dockerfile.dev $GITMAINFOLDER/client 
 
 # The commands to be executed to run the test suite
 # Each command must be successful for Travis to run the next command
@@ -22,39 +37,8 @@ script:
   # So we need to use a flag to npm run test that returns it back to Travis
   -  docker run mitchellgerdisch/react-test npm run test -- --coverage
 
-after_success:
-  # if the above test succeeds, build the production images
-  - cd $TRAVIS_BUILD_DIR/elastic_beanstalk-FIB_calculator
-  - docker build -t mitchellgerdisch/multi-client ./client
-  - docker build -t mitchellgerdisch/multi-nginx ./nginx
-  - docker build -t mitchellgerdisch/multi-server ./server
-  - docker build -t mitchellgerdisch/multi-worker ./worker
-  
-  # login to docker hub so we can push the images to docker
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
-  # now push the images to docker hub so that later Elastic Beanstalk or wherever I'm running this stuff can find the images.
-  - docker push mitchellgerdisch/multi-client  
-  - docker push mitchellgerdisch/multi-nginx
-  - docker push mitchellgerdisch/multi-server
-  - docker push mitchellgerdisch/multi-worker
-
-  # now go back to top directory so deploy can find things
-  - cd $TRAVIS_BUILD_DIR
-
-### DEPLOY IS DISABLED AT THIS TIME since the elastic beanstalk and related REDIS and RDS instances are not running ###
-  # now tell AWS that we've pushed the images so it can grab them and deploy them - specifically when it sees the Dockerrun.aws.json it'll use it to do the deploy
-# deploy:
-#   # Stuff to do to push to AWS beanstalk for running
-#   # Travis CI has a set of built-in providers it supports. AWS elastic beanstalk is one such provider
-#   provider: elasticbeanstalk
-#   region: "us-east-1"
-#   app: "MultiDocker"
-#   env: "Multidocker-env"
-#   bucket_name: "elasticbeanstalk-us-east-1-459434280743"
-#   bucket_path: "multi-docker" # will match the app name above
-#   on: 
-#     branch: master
-#   access_key_id: "$AWS_ACCESS_KEY"  # This is an "environment" variable set up in Travis CI settings for the given repository
-#   secret_access_key: 
-#     secure: "$AWS_SECRET_ACCESS_KEY"
+deploy:
+  provider: script
+  script: bash $GITMAINFOLDER/deploy.sh 
+  on: 
+    branch: master  
