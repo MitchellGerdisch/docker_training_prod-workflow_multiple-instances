@@ -23,7 +23,7 @@ spec:
           args:
             - --turboconfig=/etc/kubeturbo/turbo.config
             - --v=2
-            # Uncomment the following two args if running in Openshift
+            # Uncomment the following two args if running in Openshift 
             #- --kubelet-https=true
             #- --kubelet-port=10250
             # Uncomment the following arg if using IP for stitching
