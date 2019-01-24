@@ -13,6 +13,6 @@ docker push mitchellgerdisch/multi-server:$GIT_SHA
 docker push mitchellgerdisch/multi-worker:$GIT_SHA
 
 kubectl apply -f $GITMAINFOLDER/k8s
-kubectl set image deployments/client-deployment server=mitchellgerdisch/multi-client:$GIT_SHA
+kubectl set image deployments/client-deployment client=mitchellgerdisch/multi-client:$GIT_SHA
 kubectl set image deployments/server-deployment server=mitchellgerdisch/multi-server:$GIT_SHA
-kubectl set image deployments/worker-deployment server=mitchellgerdisch/multi-worker:$GIT_SHA
+kubectl set image deployments/worker-deployment worker=mitchellgerdisch/multi-worker:$GIT_SHA
