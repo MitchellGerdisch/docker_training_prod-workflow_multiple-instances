@@ -1,0 +1,44 @@
+##### Needs to be moved to top of repo for Travis to see and use
+
+# always need sudo
+sudo: required
+
+# Need travis to install docker on it's system
+services:
+  - docker
+
+env:
+  global:
+    # Gets the unique sha for this commit. Is then used by deploy.sh script to tag the image
+    - GIT_SHA=$(git rev-parse HEAD)
+    - GITMAINFOLDER="$TRAVIS_BUILD_DIR/kubernetes-FIB_calculator"
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1    
+
+# Install google cloud sdk named gcloud
+# Authenticate to google cloud
+# Then use gcloud to talk to Google cloud 
+# authenticate to docker and start doing docker stuff
+before_install:
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in $GITMAINFOLDER/travis-glcoud-service_account.json.enc -out ./travis-glcoud-service_account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null; 
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file travis-glcoud-service_account.json
+  - gcloud config set project zippy-tiger-228918
+  - gcloud config set compute/zone us-central1-a
+  - gcloud container clusters get-credentials k8s-cluster  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker build -t mitchellgerdisch/react-test -f $GITMAINFOLDER/client/Dockerfile.dev $GITMAINFOLDER/client 
+
+# The commands to be executed to run the test suite
+# Each command must be successful for Travis to run the next command
+script:
+  # the command needs to return back to Travis - by default "npm run test" will launch container and then hang and wait for input.
+  # So we need to use a flag to npm run test that returns it back to Travis
+  -  docker run mitchellgerdisch/react-test npm run test -- --coverage
+
+deploy:
+  provider: script
+  script: bash $GITMAINFOLDER/deploy.sh 
+  on: 
+    branch: master  
