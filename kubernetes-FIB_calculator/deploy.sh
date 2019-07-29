@@ -1,4 +1,5 @@
 # GIT_SHA and GITMAINFOLDER are set in travis.yml file as global environment variables.
+# change for change's sake
 
 docker build -t mitchellgerdisch/multi-client:latest -t mitchellgerdisch/multi-client:$GIT_SHA -f $GITMAINFOLDER/client/Dockerfile $GITMAINFOLDER/client
 docker build -t mitchellgerdisch/multi-server:latest -t mitchellgerdisch/multi-server:$GIT_SHA -f $GITMAINFOLDER/server/Dockerfile $GITMAINFOLDER/server
