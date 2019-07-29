@@ -6,4 +6,3 @@ https://www.udemy.com/docker-and-kubernetes-the-complete-guide/learn/v4/overview
 Instructor-provided files can be found in Github:
 stephengrider/DockerCasts
 
-# test stuff
