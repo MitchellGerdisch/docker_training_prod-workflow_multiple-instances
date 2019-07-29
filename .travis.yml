@@ -23,7 +23,7 @@ before_install:
   - curl https://sdk.cloud.google.com | bash > /dev/null; 
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud components update kubectl
-  - gcloud auth activate-service-account --key-file service_account.json
+  - gcloud auth activate-service-account --key-file service-account.json
   - gcloud config set project zippy-tiger-228918
   - gcloud config set compute/zone us-central1-a
   - gcloud container clusters get-credentials k8s-cluster-20190729
