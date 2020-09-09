@@ -21,7 +21,7 @@ const printVehicle = (vehicle: {
 ***/
 
 // Interface type declaration
-interface Vehicle {
+interface InterfaceVehicle {
   // Not needed - see note at end   name: string;
   // Not needed - see note at end   year: number;
   // Not needed - see note at end   broken: boolean;
@@ -38,7 +38,7 @@ const oldCivic = {
   },
 };
 
-const printVehicle = (vehicle: Vehicle): void => {
+const printVehicle = (vehicle: InterfaceVehicle): void => {
   console.log(vehicle.summary());
 };
 
