@@ -1,9 +1,19 @@
 # Notes from course
 
+## Useful references
+
+https://node.js.org
+
+## Type Definition Files
+
+Don't forget that you need to bring over type definition files for different javascript modules.
+So after adding, say, "import 'fs' from 'fs', you need to run "npm install @types/node" in the console to create/update the types definition file.
+
 ## Installation
 
-- sudo npm install -g typescript ts-node
+- npm install -g typescript ts-node
   - Used to install typescript compiler and node environment.
+- npm install nodemon concurrently
 
 ## Visual Studio Code Setup
 
